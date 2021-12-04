@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  rest-api-pagination:
+    image: lduran355/rest-api-pagination:0.0.1-SNAPSHOT
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on: # Start the depends_on first
+      - local-mysql
+    environment:
+      RDS_HOSTNAME: local-mysql
+      RDS_PORT: 3306
+      RDS_DB_NAME: testedb
+      RDS_USERNAME: user123
+      RDS_PASSWORD: my-secret123
+    networks:
+      - mysqlNET
+      
+  local-mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: my-secret123
+      MYSQL_USER: user123
+      MYSQL_PASSWORD: my-secret123
+      MYSQL_DATABASE: testedb
+    volumes: 
+      - local-mysqldb:/var/lib/mysql
+    networks:
+      - mysqlNET
+
+# Volumes
+volumes: 
+  local-mysqldb:
+  
+# Networks to be created to facilitate communication between containers
+networks:
+  mysqlNET:

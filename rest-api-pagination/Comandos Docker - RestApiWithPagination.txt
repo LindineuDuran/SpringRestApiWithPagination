@@ -1,0 +1,14 @@
+// Creating a Custom Network to Connect MySQL and WebApplication
+docker network create mysqlNET
+
+// Baixar imagem do MySQL
+docker run --detach --restart=always --env MYSQL_ROOT_PASSWORD=my-secret123 --env MYSQL_USER=user123 --env MYSQL_PASSWORD=my-secret123 --env MYSQL_DATABASE=testedb --name local-mysql --publish 3306:3306 --network=mysqlNET --volume local-mysqldb:/var/lib/mysql mysql:8.0
+
+// Gerar imagem da API dentro Eclipse/Maven
+clean package -DskipTests
+
+// Gerar o Container da API
+docker container run -d --restart=always -p 8080:8080 --network=mysqlNET -e RDS_HOSTNAME=mysql lduran355/rest-api-pagination:0.0.1-SNAPSHOT
+
+// Executar o Docker Compose
+docker-compose up -d
